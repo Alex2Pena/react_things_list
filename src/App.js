@@ -25,17 +25,16 @@ class App extends Component {
   };
 
   thingMaker(thing) {
-    const newThings = [...this.state.things, thing];
-    this.setState({newThings});
-
+    const things = [...this.state.things, thing];
+    this.setState({things});
   }
 
   render() {
     return (
       <div className="App">
         {/* Give Components the access the whatever state is needed */}
-        <Header thingCount={this.state.things.length} />
-        <ThingList things={this.state.things} thingHandler={this.thingMaker} />
+        <Header thingCount = {this.state.things.length} />
+        <ThingList things = {this.state.things} thingMaker = {this.thingMaker} />
         <Footer />
       </div>
     );
@@ -66,8 +65,8 @@ function Header(props) {
 
 // ThingsList needs to be a class that extends Component to use state without hooks
 class ThingList extends Component {
-
   render() {
+    // console.log(this.props)
     return (
       <div>
         <ThingForm thingMaker={this.props.thingMaker} />
@@ -86,12 +85,17 @@ class ThingForm extends React.Component {
     super(props);
     this.state = { title:'', description:'' };
 
-    this.handleChange = this.handleChange.bind(this);
+    this.handleTitleChange = this.handleTitleChange.bind(this);
+    this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    console.log(props)
   }
 
-  handleChange(event) {
-    this.setState({ value: event.target.value });
+  handleTitleChange(event) {
+    this.setState({ title: event.target.value });
+  }
+  handleDescriptionChange(event) {
+    this.setState({ description: event.target.value });
   }
 
   handleSubmit(event) {
@@ -100,15 +104,21 @@ class ThingForm extends React.Component {
     this.props.thingMaker(this.state)
   }
 
+  componentDidUpdate(){
+    console.log("Current State:", this.state)
+  }
+
   render() {
     return (
       <form onSubmit={this.handleSubmit}>
         <label>
           Title:
-          <input type="text" value={this.state.title} onChange={this.handleChange} />
+          <input type="text" value={this.state.title} onChange={this.handleTitleChange} />
+          <br></br>
           Description:
-          <input type="text" value={this.state.description} onChange={this.handleChange} />
+          <input type="text" value={this.state.description} onChange={this.handleDescriptionChange} />
         </label>
+        <br></br>
         <input type="submit" value="Submit" />
       </form>
     );
@@ -116,8 +126,13 @@ class ThingForm extends React.Component {
 }
 
 function ThingItem(props) {
-  return <li> {props.title}</li>
+  return (
+    <div>
+      <li> {props.title} - {props.description} </li>
+    </div>
+  )
 }
+
 
 // Footer component should…
 // Display some placeholder text (e.g. lorem ipsum)
